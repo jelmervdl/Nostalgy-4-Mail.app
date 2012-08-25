@@ -3,6 +3,7 @@
 //  Nostalgy4MailApp
 //
 //  Created by Jelmer van der Linde on 23-08-12.
+//  Taken from https://github.com/textmate/textmate/blob/master/Frameworks/text/src/ranker.cc
 //
 //
 
