@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		C161D34115E6A49D00FB35AC /* Ranker.mm in Sources */ = {isa = PBXBuildFile; fileRef = C161D33F15E6A49D00FB35AC /* Ranker.mm */; };
 		C48D80200FD1ACE00072A78D /* SearchPopup.xib in Resources */ = {isa = PBXBuildFile; fileRef = C48D801F0FD1ACE00072A78D /* SearchPopup.xib */; };
 		C48D80230FD1AD420072A78D /* SearchPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = C48D80220FD1AD420072A78D /* SearchPopup.m */; };
 		C4E208620FD13A0500D2ED31 /* BundleLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C4E208610FD13A0500D2ED31 /* BundleLoader.m */; };
@@ -38,6 +39,8 @@
 		32DBCF630370AF2F00C91783 /* Nostalgy4MailApp_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nostalgy4MailApp_Prefix.pch; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* Nostalgy4MailApp.mailbundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Nostalgy4MailApp.mailbundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = English; path = English.lproj/Info.plist; sourceTree = "<group>"; };
+		C161D33F15E6A49D00FB35AC /* Ranker.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Ranker.mm; sourceTree = "<group>"; };
+		C161D34015E6A49D00FB35AC /* Ranker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ranker.h; sourceTree = "<group>"; };
 		C48D801F0FD1ACE00072A78D /* SearchPopup.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchPopup.xib; sourceTree = "<group>"; };
 		C48D80210FD1AD420072A78D /* SearchPopup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchPopup.h; sourceTree = "<group>"; };
 		C48D80220FD1AD420072A78D /* SearchPopup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchPopup.m; sourceTree = "<group>"; };
@@ -100,6 +103,8 @@
 				C48D80210FD1AD420072A78D /* SearchPopup.h */,
 				C48D80220FD1AD420072A78D /* SearchPopup.m */,
 				C48D801F0FD1ACE00072A78D /* SearchPopup.xib */,
+				C161D33F15E6A49D00FB35AC /* Ranker.mm */,
+				C161D34015E6A49D00FB35AC /* Ranker.h */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -166,7 +171,7 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0440;
 			};
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "Nostalgy4MailApp" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -205,6 +210,7 @@
 				C4E208620FD13A0500D2ED31 /* BundleLoader.m in Sources */,
 				C4E20AF30FD1510A00D2ED31 /* SearchManager.m in Sources */,
 				C48D80230FD1AD420072A78D /* SearchPopup.m in Sources */,
+				C161D34115E6A49D00FB35AC /* Ranker.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,6 +241,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -255,6 +262,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

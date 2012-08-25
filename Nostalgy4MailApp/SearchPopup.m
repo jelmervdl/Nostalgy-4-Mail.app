@@ -7,22 +7,57 @@
 //
 
 #import "SearchPopup.h"
-
+#import "Ranker.h"
 
 @implementation SearchPopup
 
-+ (id)popupWithSubmenu:(NSMenu *)submenu andParent:(SearchManager*) parent{
-	SearchPopup* new = [[SearchPopup alloc] init];
-	new->submenu = submenu;
-	new->parent = parent;
-	new->currentResults = [NSMutableArray array];
-	[new->currentResults retain]; //FIXME: why ???
++ (id)popupWithSubmenu:(NSMenu *)submenu andParent:(SearchManager*) parent
+{
+    SearchPopup* popup = [[SearchPopup alloc] init];
+	popup->parent = parent;
+    popup->submenu = submenu;
+    
+    [NSBundle loadNibNamed: @"SearchPopup" owner:popup];
 	
-	[NSBundle loadNibNamed: @"SearchPopup" owner: new ];
-	
-	NSLog(@"SearchPopup: popupWithSubmenu: %@", submenu);
-	
-	return new;
+    return popup;
+}
+
+- (void)addMenu:(NSMenu *)menu toDictionary:(NSMutableDictionary *)dict withPath:(NSMutableArray *)path atLevel:(int)depth
+{
+    NSArray *items = [menu itemArray];
+    
+    for (int i = 0; i < [items count]; ++i)
+    {
+        NSMenuItem *menuItem = [items objectAtIndex:i];
+        int level = depth + [menuItem indentationLevel];
+        
+        // Remove items below this item.
+        for (int l = [path count] - 1; l > level; --l)
+            [path removeObjectAtIndex:l];
+        
+        // Add this menu item to the path at the appropriate level.
+        [path setObject:[menuItem title] atIndexedSubscript:level];
+        NSString *key = [path componentsJoinedByString:@"/"];
+        
+        if ([menuItem isEnabled])
+            [dict setObject:menuItem forKey:key];
+        
+        if ([menuItem hasSubmenu])
+            [self addMenu:[menuItem submenu]
+                toDictionary:dict
+                 withPath:path
+                  atLevel:level + 1];
+    }
+}
+
+- (id) init
+{
+    self = [super init];
+        
+    currentResults = [NSMutableArray array];
+    [currentResults retain]; // Is to nessecary?
+    
+    return self;
 }
 
 - (void)showWithSender: sender andTitle: (NSString *)title {
@@ -32,129 +67,154 @@
 	// set message handling to copy / move
 	[submenu _sendMenuOpeningNotification];
 	
-	if( FALSE ) {
-		NSPopUpButtonCell *popUpButtonCell = [[NSPopUpButtonCell alloc] initTextCell:@"" pullsDown:FALSE];
-		[popUpButtonCell setMenu:submenu];
-		[popUpButtonCell selectItem:nil];
-		[popUpButtonCell attachPopUpWithFrame:[searchWindow frame] inView: [searchWindow contentView]];	
-		
-		instrumentObjcMessageSends(YES);
-		[popUpButtonCell performClickWithFrame:[searchWindow frame] inView: [searchWindow contentView]];	
-		instrumentObjcMessageSends(NO);
-		
-		[popUpButtonCell dismissPopUp];	
-	}
-	
-	
-	if( [parent lastFolder] != nil ) {
+	if ([parent lastFolder] != nil)
+    {
 		[searchField setStringValue: [parent lastFolder]];
 		[self doSearch: sender];
 		[searchField selectText: sender];
 	}
-	[searchWindow setTitle:title];
+	
+    [searchWindow setTitle:title];
 	[searchWindow makeKeyAndOrderFront: sender];
+    [searchField becomeFirstResponder];
+}
+
+NSInteger compareMatch(id l_row, id r_row, void *query)
+{
+    double l_rank = calculate_rank(
+        (NSString *)[(NSDictionary*)l_row objectForKey:@"path"],
+        (NSString *)query);
+    
+    double r_rank = calculate_rank(
+        (NSString *)[(NSDictionary*)r_row objectForKey:@"path"],
+        (NSString *)query);
+    
+    if (l_rank == r_rank)
+        return NSOrderedSame;    
+    else
+        return l_rank > r_rank
+        ? NSOrderedAscending
+        : NSOrderedDescending;
 }
 
 - (IBAction)doSearch: sender
 {
-	[submenu update];
-	
 	NSString *searchString = [searchField stringValue];
 
-	while( [currentResults count] > 0 ) [currentResults removeLastObject];
+    // Clear all previous results.
+    [currentResults removeAllObjects];
+    
+    // All the available folders will be collected in here.
+    NSMutableDictionary *folders = [NSMutableDictionary dictionary];
+    
+    // And we will use this array as a sort of stack to keep track of the path
+    // of each folder, which we use to generate the path string.
+    NSMutableArray *path = [NSMutableArray array];
+    
+    [submenu update];
+    [self addMenu:submenu toDictionary:folders withPath:path atLevel:0];
 	
-    NSArray     *items = [submenu itemArray];
-    for(int iI = 0; iI < [items count]; iI++){
-        NSMenuItem*  menuItem = [items objectAtIndex:iI];
-		if(! [menuItem isEnabled] ) continue;
-		
-		NSString* title = [menuItem title];
-		NSRange aRange = [title rangeOfString: searchString options: NSCaseInsensitiveSearch];
-		if (aRange.location == NSNotFound) continue;
-		[currentResults addObject: menuItem];
-    }   
-	
-	if( [currentResults count] > 0 )
-		selectedResult = [currentResults objectAtIndex:0];
-	else
-		selectedResult = nil;
+    // Filter the folders to only include folders that somehow match.
+    for (NSString *path in folders)
+    {
+        if ([searchString length] == 0 || is_subset(searchString, path))
+            [currentResults addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                       path, @"path",
+                                       [folders objectForKey:path], @"menuItem",
+                                       nil]];
+    }
+    
+    // Sort the folders according to how well they match with the search string.
+    [currentResults sortUsingFunction:compareMatch context:searchString];
+    
+    selectedResult = [currentResults count] > 0
+        ? [currentResults objectAtIndex:0]
+        : nil;
 	
 	[resultViewer reloadData];
 }
 
-
-- (BOOL)control:(NSControl*)control textView:(NSTextView*)textView doCommandBySelector:(SEL)commandSelector {
+- (BOOL)control:(NSControl*)control textView:(NSTextView*)textView doCommandBySelector:(SEL)commandSelector
+{
     BOOL result = NO;
-    if (commandSelector == @selector(insertNewline:)) {
-		if(selectedResult != nil) {
-			[parent setLastFolder: [selectedResult title]];
-			[submenu performActionForItemAtIndex: [submenu indexOfItem: selectedResult] ];
+    if (commandSelector == @selector(insertNewline:))
+    {
+		if (selectedResult != nil)
+        {
+//			[parent setLastFolder: selectedResult objectAtIndex:0]];
+            NSMenuItem *menuItem = [selectedResult objectForKey:@"menuItem"];
+            [[menuItem menu] performActionForItemAtIndex:[[menuItem menu] indexOfItem:menuItem]];
 		}
+        
 		[searchWindow orderOut:nil];
 		result = YES;
     }
-	else if(commandSelector == @selector(cancelOperation:)) {
+	else if (commandSelector == @selector(cancelOperation:))
+    {
 		[searchWindow orderOut:nil];
 		result = YES;
 	}
-	/* else if(commandSelector == @selector(moveLeft:)) {
-	 // left arrow pressed
-	 result = YES;
-	 }
-	 else if(commandSelector == @selector(moveRight:)) {
-	 // rigth arrow pressed
-	 result = YES;
-	 }*/
-	 else if(commandSelector == @selector(moveUp:)) {
-		 if(selectedResult != nil) {
-			 int index = [currentResults indexOfObject: selectedResult]-1;
-			 if(index < 0) index = 0;
+	else if (commandSelector == @selector(moveUp:))
+    {
+		 if (selectedResult != nil)
+         {
+			 int index = [currentResults indexOfObject:selectedResult] - 1;
+
+			 if (index < 0)
+                 index = 0;
+			 
+             selectedResult = [currentResults objectAtIndex:index];
+			 [resultViewer selectRow:index byExtendingSelection:FALSE];
+			 [resultViewer scrollRowToVisible:index];
+		 }
+		 result = YES;
+	}
+	else if (commandSelector == @selector(moveDown:))
+    {
+		 if (selectedResult != nil)
+         {
+			 int index = [currentResults indexOfObject: selectedResult] + 1;
+             
+			 if (index >= [currentResults count])
+                 index = [currentResults count] - 1;
+             
 			 selectedResult = [currentResults objectAtIndex:index];
 			 [resultViewer selectRow:index byExtendingSelection:FALSE];
 			 [resultViewer scrollRowToVisible:index];
 		 }
 		 result = YES;
-	 }
-	 else if(commandSelector == @selector(moveDown:)) {
-		 if(selectedResult != nil) {
-			 int index = [currentResults indexOfObject: selectedResult]+1;
-			 if(index >= [currentResults count]) index = [currentResults count] - 1;
-			 selectedResult = [currentResults objectAtIndex:index];
-			 [resultViewer selectRow:index byExtendingSelection:FALSE];
-			 [resultViewer scrollRowToVisible:index];
-		 }
-		 result = YES;
-	 }
+	}
+    
     return result;
 }
 
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+- (id)tableView:(NSTableView *)table objectValueForTableColumn:(NSTableColumn *)column row:(int)rowIndex
 {	
-    id theValue;
     NSParameterAssert(rowIndex >= 0 && rowIndex < [currentResults count]);
-	
-    NSMenuItem* row = [currentResults objectAtIndex:rowIndex];
-	if( [[aTableColumn identifier] isEqualToString: @"image"] ) return [row image];
-	else if( [[aTableColumn identifier] isEqualToString: @"title"] ) return [row title];
-    return theValue;
-	
+    NSDictionary* row = [currentResults objectAtIndex:rowIndex];
+    
+	if ([[column identifier] isEqualToString: @"image"])
+        return [[row objectForKey:@"menuItem"] image];
+    
+    if ([[column identifier] isEqualToString: @"title"])
+        return [row objectForKey:@"path"];
+    
+    return 0;
 }
 
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView
-
 {
-	
     return [currentResults count];
-	
 }
 
-- (IBAction)changeSelection: sender {
+- (IBAction)changeSelection:sender
+{
 	int i = [resultViewer selectedRow];
-	if(i >= 0 && i < [currentResults count])
+    
+	if (i >= 0 && i < [currentResults count])
 		selectedResult = [currentResults objectAtIndex: i];
 	else 
 		selectedResult = nil;
 }
-
 
 @end

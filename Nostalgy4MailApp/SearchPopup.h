@@ -13,14 +13,16 @@
 @interface SearchPopup : NSObject {
 	IBOutlet NSSearchField* searchField;
 	IBOutlet NSWindow* searchWindow;
-	NSMenu* submenu;
+    NSMenu* submenu;
 	NSMutableArray* currentResults;
-	NSMenuItem* selectedResult;
+	NSDictionary* selectedResult;
 	IBOutlet NSTableView* resultViewer;
 	SearchManager* parent;
 }
 
 + (id)popupWithSubmenu:(NSMenu *)submenu andParent:(SearchManager*) parent;
+- (id)init;
+- (void)addMenu:(NSMenu *)menu toDictionary:(NSMutableDictionary*)dict withPath:(NSMutableArray *)array atLevel:(int)level;
 - (void)showWithSender: sender andTitle:(NSString *)title;
 - (IBAction)doSearch: sender;
 - (IBAction)changeSelection: sender;
