@@ -164,7 +164,7 @@ NSInteger compareMatch(id l_row, id r_row, void *query)
                  index = 0;
 			 
              selectedResult = [currentResults objectAtIndex:index];
-			 [resultViewer selectRow:index byExtendingSelection:FALSE];
+			 [resultViewer selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:FALSE];
 			 [resultViewer scrollRowToVisible:index];
 		 }
 		 result = YES;
@@ -179,7 +179,7 @@ NSInteger compareMatch(id l_row, id r_row, void *query)
                  index = [currentResults count] - 1;
              
 			 selectedResult = [currentResults objectAtIndex:index];
-			 [resultViewer selectRow:index byExtendingSelection:FALSE];
+			 [resultViewer selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:FALSE];
 			 [resultViewer scrollRowToVisible:index];
 		 }
 		 result = YES;
