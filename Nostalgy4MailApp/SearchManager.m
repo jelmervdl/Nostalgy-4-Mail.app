@@ -69,7 +69,7 @@
 	
     for(iI = 0; iI < [items count]; iI++){
         menuItem = [items objectAtIndex:iI];
-		
+        
         if([menuItem action] == selector)
             return ([menu insertItemWithTitle:title action:action keyEquivalent:keyEquivalent atIndex:iI + offset]);
         else if([[menuItem target] isKindOfClass:[NSMenu class]]){
@@ -85,7 +85,7 @@
 
 - (void) setContextMenu:(NSMenu *)menu {
 	
-	NSMenuItem* firstMenuItem =  [self newMenuItemWithTitle:@"Nostalgy" action:NULL andKeyEquivalent:@"" inMenu:[[NSApplication sharedApplication] mainMenu] relativeToItemWithSelector:@selector(addSenderToAddressBook:) offset:1];
+	NSMenuItem* firstMenuItem =  [self newMenuItemWithTitle:@"Nostalgy" action:NULL andKeyEquivalent:@"" inMenu:[[NSApplication sharedApplication] mainMenu] relativeToItemWithSelector:@selector(addSenderToContacts:) offset:1];
 	
 
 	if(!firstMenuItem)
