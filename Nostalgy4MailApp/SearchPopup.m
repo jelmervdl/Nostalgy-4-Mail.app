@@ -8,46 +8,60 @@
 
 #import "SearchPopup.h"
 #import "Ranker.h"
+#import "PrivateMailHeaders.h"
+
+NSString *fullPathNameForMailbox(MFMailbox *mailbox)
+{
+    NSMutableArray *stack = [NSMutableArray array];
+    
+    while (mailbox) {
+        NSString *name = mailbox.name;
+        
+        if (name == nil)
+            //name = [mailbox displayName];
+            break; // because account name, not interesting.
+        
+        [stack addObject:name];
+        mailbox = mailbox.parent;
+    }
+    
+    return [[[stack reverseObjectEnumerator] allObjects] componentsJoinedByString:@"/"];
+}
 
 @implementation SearchPopup
 
-+ (id)popupWithSubmenu:(NSMenu *)submenu andParent:(SearchManager*) parent
++ (id)popupWithDelegate:(NSObject *)delegate
 {
     SearchPopup* popup = [[SearchPopup alloc] init];
-	popup->parent = parent;
-    popup->submenu = submenu;
+	popup->delegate = delegate;
     
     [NSBundle loadNibNamed: @"SearchPopup" owner:popup];
-	
+    
     return popup;
 }
 
-- (void)addMenu:(NSMenu *)menu toDictionary:(NSMutableDictionary *)dict withPath:(NSMutableArray *)path atLevel:(int)depth
+- (void)addMailboxesToDictionary:(NSMutableDictionary *)dict
 {
-    NSArray *items = [menu itemArray];
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
     
-    for (int i = 0; i < [items count]; ++i)
-    {
-        NSMenuItem *menuItem = [items objectAtIndex:i];
-        int level = depth + [menuItem indentationLevel];
-        
-        // Remove items below this item.
-        for (int l = [path count] - 1; l > level; --l)
-            [path removeObjectAtIndex:l];
-        
-        // Add this menu item to the path at the appropriate level.
-        [path setObject:[menuItem title] atIndexedSubscript:level];
-        NSString *key = [path componentsJoinedByString:@"/"];
-        
-        if ([menuItem isEnabled])
-            [dict setObject:menuItem forKey:key];
-        
-        if ([menuItem hasSubmenu])
-            [self addMenu:[menuItem submenu]
-                toDictionary:dict
-                 withPath:path
-                  atLevel:level + 1];
+    for (MFMailAccount *account in mailApp.accounts) {
+        if (account.isActive) {
+            for (MFMailbox *mailbox in account.mailboxes) {
+                if (mailbox.isValid && mailbox.isVisible) {
+                    NSString *name = fullPathNameForMailbox(mailbox);
+                    // NSLog(@"N4M: Adding mailbox %@: %@", name, mailbox);
+                    [dict setObject:mailbox forKey:name];
+                }
+            }
+        }
     }
+    
+    MessageViewer *viewer = [[mailApp messageViewers] firstObject];
+    [dict setObject:viewer.junkMailbox forKey:viewer.junkMailbox.name];
+    [dict setObject:viewer.sentMailbox forKey:viewer.sentMailbox.name];
+    [dict setObject:viewer.draftsMailbox forKey:viewer.draftsMailbox.name];
+    [dict setObject:viewer.outbox forKey:viewer.outbox.name];
+    [dict setObject:viewer.inbox forKey:viewer.inbox.name];
 }
 
 - (id) init
@@ -55,26 +69,26 @@
     self = [super init];
         
     currentResults = [NSMutableArray array];
-    [currentResults retain]; // Is to nessecary?
+    [currentResults retain];
+    
+    // All the available folders will be collected in here.
+    folders = [NSMutableDictionary dictionary];
+    [folders retain];
+    [self addMailboxesToDictionary:folders];
     
     return self;
 }
 
-- (void)showWithSender: sender andTitle: (NSString *)title {
+- (void) dealloc
+{
+    [folders release];
+    [currentResults release];
+    [super dealloc];
+}
 
-	// update menu items
-	[[submenu delegate] menuNeedsUpdate: submenu ];
-	// set message handling to copy / move
-	[submenu _sendMenuOpeningNotification];
-	
-	if ([parent lastFolder] != nil)
-    {
-		[searchField setStringValue: [parent lastFolder]];
-		[self doSearch: sender];
-		[searchField selectText: sender];
-	}
-	
-    [searchWindow setTitle:title];
+- (void)showWithSender:(id)sender andTitle: (NSString *)title
+{
+	[searchWindow setTitle:title];
 	[searchWindow makeKeyAndOrderFront: sender];
     [searchField becomeFirstResponder];
 }
@@ -100,28 +114,22 @@ NSInteger compareMatch(id l_row, id r_row, void *query)
 - (IBAction)doSearch: sender
 {
 	NSString *searchString = [searchField stringValue];
+    //NSLog(@"### Search string is %@", searchString);
 
     // Clear all previous results.
     [currentResults removeAllObjects];
     
-    // All the available folders will be collected in here.
-    NSMutableDictionary *folders = [NSMutableDictionary dictionary];
+    //NSLog(@"### Folders found: %lu", [folders count]);
     
-    // And we will use this array as a sort of stack to keep track of the path
-    // of each folder, which we use to generate the path string.
-    NSMutableArray *path = [NSMutableArray array];
-    
-    [submenu update];
-    [self addMenu:submenu toDictionary:folders withPath:path atLevel:0];
-	
     // Filter the folders to only include folders that somehow match.
     for (NSString *path in folders)
     {
-        if ([searchString length] == 0 || is_subset(searchString, path))
+        if ([searchString length] == 0 || is_subset(searchString, path)) {
             [currentResults addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                        path, @"path",
-                                       [folders objectForKey:path], @"menuItem",
+                                       [folders objectForKey:path], @"mailbox",
                                        nil]];
+        }
     }
     
     // Sort the folders according to how well they match with the search string.
@@ -141,9 +149,8 @@ NSInteger compareMatch(id l_row, id r_row, void *query)
     {
 		if (selectedResult != nil)
         {
-//			[parent setLastFolder: selectedResult objectAtIndex:0]];
-            NSMenuItem *menuItem = [selectedResult objectForKey:@"menuItem"];
-            [[menuItem menu] performActionForItemAtIndex:[[menuItem menu] indexOfItem:menuItem]];
+			NSLog(@"#N4M Invoking %@ on %@", [selectedResult objectForKey:@"mailbox"], delegate);
+            [delegate mailboxSelected:[selectedResult objectForKey:@"mailbox"]];
 		}
         
 		[searchWindow orderOut:nil];
@@ -193,13 +200,16 @@ NSInteger compareMatch(id l_row, id r_row, void *query)
     NSParameterAssert(rowIndex >= 0 && rowIndex < [currentResults count]);
     NSDictionary* row = [currentResults objectAtIndex:rowIndex];
     
-	if ([[column identifier] isEqualToString: @"image"])
-        return [[row objectForKey:@"menuItem"] image];
+    if ([[column identifier] isEqualToString: @"image"]) {
+        Class MailboxesController = NSClassFromString(@"MailboxesController");
+        return [MailboxesController iconForMailbox:[row objectForKey:@"mailbox"] size:1 style:5];
+    }
+    
     
     if ([[column identifier] isEqualToString: @"title"])
         return [row objectForKey:@"path"];
     
-    return 0;
+    return nil;
 }
 
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView

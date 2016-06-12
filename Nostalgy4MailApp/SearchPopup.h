@@ -10,19 +10,22 @@
 
 #include "SearchManager.h"
 
+@class MFMailbox;
+
+NSString *fullPathNameForMailbox(MFMailbox *mailbox);
+
 @interface SearchPopup : NSObject {
 	IBOutlet NSSearchField* searchField;
 	IBOutlet NSWindow* searchWindow;
-    NSMenu* submenu;
 	NSMutableArray* currentResults;
 	NSDictionary* selectedResult;
 	IBOutlet NSTableView* resultViewer;
-	SearchManager* parent;
+    NSObject *delegate;
+    NSMutableDictionary *folders;
 }
 
-+ (id)popupWithSubmenu:(NSMenu *)submenu andParent:(SearchManager*) parent;
++ (id)popupWithDelegate:(id)delegate;
 - (id)init;
-- (void)addMenu:(NSMenu *)menu toDictionary:(NSMutableDictionary*)dict withPath:(NSMutableArray *)array atLevel:(int)level;
 - (void)showWithSender: sender andTitle:(NSString *)title;
 - (IBAction)doSearch: sender;
 - (IBAction)changeSelection: sender;

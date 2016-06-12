@@ -8,47 +8,144 @@
 
 #import "SearchManager.h"
 #import "SearchPopup.h"
+#import "PrivateMailHeaders.h"
+#import "objc/runtime.h"
+
+@interface RepresentedObject : NSObject
+@property(strong) id representedObject;
+@end
+
+@implementation RepresentedObject
+// Empty
+@end
+
+@implementation MoveMessageDelegate
+
+- (void) mailboxSelected:(id)mailbox {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSMutableArray *viewers = [mailApp messageViewers];
+    MessageViewer *viewer = [viewers firstObject];
+    
+    RepresentedObject *container = [[RepresentedObject alloc] init];
+    [container setRepresentedObject:mailbox];
+    
+    [viewer moveMessagesToMailbox:container];
+    
+    [container dealloc];
+}
+
+@end
+
+@implementation CopyMessageDelegate
+
+- (void) mailboxSelected:(id)mailbox {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSMutableArray *viewers = [mailApp messageViewers];
+    MessageViewer *viewer = [viewers firstObject];
+    
+    RepresentedObject *container = [[RepresentedObject alloc] init];
+    [container setRepresentedObject:mailbox];
+    
+    [viewer copyMessagesToMailbox:container];
+    
+    [container dealloc];
+}
+
+@end
+
+@implementation SelectMailboxDelegate
+
+- (void) mailboxSelected:(id) mailbox {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSMutableArray *viewers = [mailApp messageViewers];
+    MessageViewer *viewer = [viewers firstObject];
+    viewer.selectedMailboxes = [NSArray arrayWithObject:mailbox];
+}
+
+@end
 
 @implementation SearchManager
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        moveMessageDelegate = [[MoveMessageDelegate alloc] init];
+        copyMessageDelegate = [[CopyMessageDelegate alloc] init];
+        selectMailboxDelegate = [[SelectMailboxDelegate alloc] init];
+    }
+    return self;
+}
  
 
-- (IBAction)moveToFolder: sender {
-	NSMenu* menu = [submenuMove submenu];
-	[[SearchPopup popupWithSubmenu: menu andParent: self ] showWithSender: sender andTitle: @"Move to folder ..." ];
+- (IBAction)moveToFolder:(id)sender {
+    [[SearchPopup popupWithDelegate:moveMessageDelegate] showWithSender:sender andTitle:@"Move to folder"];
 }
 
-- (IBAction)moveToLastFolder: sender {
-	NSMenu* menu = [submenuMove submenu];
-	[self invokeLastFolder: menu];
+- (IBAction)copyToFolder:(id)sender {
+	[[SearchPopup popupWithDelegate:copyMessageDelegate] showWithSender:sender andTitle:@"Copy to folder"];
 }
 
-- (IBAction)copyToFolder: sender {
-	NSMenu* menu = [submenuCopy submenu];
-	[[SearchPopup popupWithSubmenu: menu andParent: self ] showWithSender: sender andTitle: @"Copy to folder ..." ];
+- (IBAction)goToFolder:(id)sender {
+    [[SearchPopup popupWithDelegate:selectMailboxDelegate] showWithSender:sender andTitle:@"Go to folder"];
 }
 
-- (IBAction)copyToLastFolder: sender {
-	NSMenu* menu = [submenuCopy submenu];
-	[self invokeLastFolder: menu];
+- (IBAction)archiveMessages:(id)sender {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSMutableArray *viewers = [mailApp messageViewers];
+    MessageViewer *viewer = [viewers firstObject];
+    [viewer archiveMessages:nil];
 }
 
-- (void)invokeLastFolder:(NSMenu*) submenu {
-	if( [submenu numberOfItems] == 0 ) [[submenu delegate] menuNeedsUpdate: submenu ];
-	[submenu update];
-	
-	NSArray     *items = [submenu itemArray];
-    for(int iI = 0; iI < [items count]; iI++){
-        NSMenuItem*  menuItem = [items objectAtIndex:iI];
-		if(! [menuItem isEnabled] ) continue;
-		
-		NSString* title = [menuItem title];
-		if( [title isEqualToString: lastFolder] ) {
-			[submenu performActionForItemAtIndex: iI ];
-			return;
-		}
-    }   
+- (IBAction)replyAllMessage:(id)sender {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSMutableArray *viewers = [mailApp messageViewers];
+    MessageViewer *viewer = [viewers firstObject];
+    [viewer replyAllMessage:nil];
 }
 
+- (IBAction)forwardMessage:(id)sender {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSMutableArray *viewers = [mailApp messageViewers];
+    MessageViewer *viewer = [viewers firstObject];
+    [viewer forwardMessage:nil];
+}
+
+- (IBAction)toggleFlag:(id)sender {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSMutableArray *viewers = [mailApp messageViewers];
+    MessageViewer *viewer = [viewers firstObject];
+    [viewer toggleFlag:nil];
+}
+
+- (IBAction)newMessage:(id)sender {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSMutableArray *viewers = [mailApp messageViewers];
+    MessageViewer *viewer = [viewers firstObject];
+    [viewer showComposeWindow:nil];
+}
+
+-(IBAction)nextMessage:(id)sender {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSMutableArray *viewers = [mailApp messageViewers];
+    MessageViewer *viewer = [viewers firstObject];
+    [[[viewer messageListController] tableViewManager] selectNextMessage:NO];
+}
+
+-(IBAction)previousMessage:(id)sender {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSMutableArray *viewers = [mailApp messageViewers];
+    MessageViewer *viewer = [viewers firstObject];
+    [[[viewer messageListController] tableViewManager] selectPreviousMessage:NO];
+}
+
+-(IBAction)focusSearchField:(id)sender {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSMutableArray *viewers = [mailApp messageViewers];
+    MessageViewer *viewer = [viewers firstObject];
+    if ([viewer.searchField acceptsFirstResponder])
+        [viewer.window makeFirstResponder:viewer.searchField];
+}
 
 
 
@@ -93,43 +190,8 @@
 	else{
 		[[firstMenuItem menu] insertItem:[NSMenuItem separatorItem] atIndex:[[firstMenuItem menu] indexOfItem:firstMenuItem]];
 		[[firstMenuItem menu] setSubmenu:menu forItem:firstMenuItem];
-		// [messageMenu setSubmenu:menu forItem:firstMenuItem];
 	}
 	NSLog(@"### Nostalgy 4 Mail.app: submenu in place <Nostalgy>");
-	
-	NSMenu* messagesMenu = [firstMenuItem menu];
-    NSArray     *items = [messagesMenu itemArray];
-    for(int iI = 0; iI < [items count]; iI++){
-        NSMenuItem*  menuItem = [items objectAtIndex:iI];
-		
-        if([menuItem hasSubmenu]) {
-			if([menuItem tag] == 105) submenuMove = menuItem;
-            if([menuItem tag] == 106) submenuCopy = menuItem;
-        }
-    }   
-	
-	NSLog(@"### Nostalgy 4 Mail.app: submenuMove: %@", submenuMove);
-	NSLog(@"### Nostalgy 4 Mail.app: submenuCopy: %@", submenuCopy);
-	
-}
-
-- (void) setLastFolder: (NSString*) folder {
-	lastFolder = folder;
-	[menuitemLastMove setHidden:FALSE];
-	[menuitemLastMove setTitle: [NSString stringWithFormat:@"Move selected messages to \"%@\"", folder]];
-	[menuitemLastCopy setHidden:FALSE];
-	[menuitemLastCopy setTitle: [NSString stringWithFormat:@"Copy selected messages to \"%@\"", folder]];
-}
-
-- (NSString*) lastFolder {
-	return lastFolder;
-}
-
-- (NSMenuItem*) dbgSubmenuMove {
-	return submenuMove;
-}
-- (NSMenuItem*) dbgSubmenuCopy{
-	return submenuCopy;
 }
 
 

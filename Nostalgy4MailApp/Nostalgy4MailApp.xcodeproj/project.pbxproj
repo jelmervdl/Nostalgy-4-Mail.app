@@ -39,6 +39,7 @@
 		32DBCF630370AF2F00C91783 /* Nostalgy4MailApp_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nostalgy4MailApp_Prefix.pch; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* Nostalgy4MailApp.mailbundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Nostalgy4MailApp.mailbundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = English; path = English.lproj/Info.plist; sourceTree = "<group>"; };
+		C12DA4DE1D0C65F7006D863B /* PrivateMailHeaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrivateMailHeaders.h; sourceTree = "<group>"; };
 		C161D33F15E6A49D00FB35AC /* Ranker.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Ranker.mm; sourceTree = "<group>"; };
 		C161D34015E6A49D00FB35AC /* Ranker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ranker.h; sourceTree = "<group>"; };
 		C48D801F0FD1ACE00072A78D /* SearchPopup.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchPopup.xib; sourceTree = "<group>"; };
@@ -139,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				32DBCF630370AF2F00C91783 /* Nostalgy4MailApp_Prefix.pch */,
+				C12DA4DE1D0C65F7006D863B /* PrivateMailHeaders.h */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -242,6 +244,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -252,7 +255,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = Nostalgy4MailApp;
 				SDKROOT = "";
-				USER_HEADER_SEARCH_PATHS = ../includes;
+				USER_HEADER_SEARCH_PATHS = "";
 				WRAPPER_EXTENSION = mailbundle;
 			};
 			name = Debug;
@@ -263,6 +266,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Nostalgy4MailApp_Prefix.pch;
@@ -270,7 +274,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = Nostalgy4MailApp;
-				USER_HEADER_SEARCH_PATHS = ../includes;
+				USER_HEADER_SEARCH_PATHS = "";
 				WRAPPER_EXTENSION = mailbundle;
 			};
 			name = Release;

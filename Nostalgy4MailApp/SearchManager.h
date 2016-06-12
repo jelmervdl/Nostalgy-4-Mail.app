@@ -8,30 +8,31 @@
 
 #import <Cocoa/Cocoa.h>
 
+@interface NSObject(SearchManagerDelegate)
+- (void) mailboxSelected:(id)mailbox;
+@end
+
+@interface MoveMessageDelegate : NSObject
+- (void) mailboxSelected:(id)mailbox;
+@end
+
+@interface CopyMessageDelegate : NSObject
+- (void) mailboxSelected:(id)mailbox;
+@end
+
+@interface SelectMailboxDelegate : NSObject
+- (void) mailboxSelected:(id)mailbox;
+@end
 
 @interface SearchManager : NSObject {
-#if 0
-	IBOutlet NSMenu* contextMenu;
-#endif
-	NSMenuItem* submenuMove;
-	NSMenuItem* submenuCopy;
-	NSString* lastFolder;
-	
-	IBOutlet NSMenuItem* menuitemLastMove;
-	IBOutlet NSMenuItem* menuitemLastCopy;
+    MoveMessageDelegate *moveMessageDelegate;
+    CopyMessageDelegate *copyMessageDelegate;
+    SelectMailboxDelegate *selectMailboxDelegate;
 }
 
 
-- (IBAction)moveToFolder: sender;
-- (IBAction)copyToFolder: sender;
-- (IBAction)moveToLastFolder: sender;
-- (IBAction)copyToLastFolder: sender;
-
-- (void)invokeLastFolder:(NSMenu*) submenu;
-- (void) setLastFolder: (NSString*) folder;
-- (NSString*) lastFolder;
-
-- (NSMenuItem*) dbgSubmenuMove;
-- (NSMenuItem*) dbgSubmenuCopy;
+- (IBAction)moveToFolder:(id)sender;
+- (IBAction)copyToFolder:(id)sender;
+- (IBAction)goToFolder:(id)sender;
 
 @end
