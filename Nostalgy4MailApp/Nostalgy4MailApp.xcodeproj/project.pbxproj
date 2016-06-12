@@ -10,6 +10,7 @@
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		C161D34115E6A49D00FB35AC /* Ranker.mm in Sources */ = {isa = PBXBuildFile; fileRef = C161D33F15E6A49D00FB35AC /* Ranker.mm */; };
+		C19FAA741D0D71B0004B7976 /* NSArray+reverse.m in Sources */ = {isa = PBXBuildFile; fileRef = C19FAA731D0D71B0004B7976 /* NSArray+reverse.m */; };
 		C48D80200FD1ACE00072A78D /* SearchPopup.xib in Resources */ = {isa = PBXBuildFile; fileRef = C48D801F0FD1ACE00072A78D /* SearchPopup.xib */; };
 		C48D80230FD1AD420072A78D /* SearchPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = C48D80220FD1AD420072A78D /* SearchPopup.m */; };
 		C4E208620FD13A0500D2ED31 /* BundleLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C4E208610FD13A0500D2ED31 /* BundleLoader.m */; };
@@ -42,6 +43,9 @@
 		C12DA4DE1D0C65F7006D863B /* PrivateMailHeaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrivateMailHeaders.h; sourceTree = "<group>"; };
 		C161D33F15E6A49D00FB35AC /* Ranker.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Ranker.mm; sourceTree = "<group>"; };
 		C161D34015E6A49D00FB35AC /* Ranker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ranker.h; sourceTree = "<group>"; };
+		C19FAA721D0D71B0004B7976 /* NSArray+reverse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+reverse.h"; sourceTree = "<group>"; };
+		C19FAA731D0D71B0004B7976 /* NSArray+reverse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+reverse.m"; sourceTree = "<group>"; };
+		C19FAA751D0D7215004B7976 /* BundleLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BundleLoader.h; sourceTree = "<group>"; };
 		C48D801F0FD1ACE00072A78D /* SearchPopup.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchPopup.xib; sourceTree = "<group>"; };
 		C48D80210FD1AD420072A78D /* SearchPopup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchPopup.h; sourceTree = "<group>"; };
 		C48D80220FD1AD420072A78D /* SearchPopup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchPopup.m; sourceTree = "<group>"; };
@@ -97,6 +101,9 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				C19FAA751D0D7215004B7976 /* BundleLoader.h */,
+				C19FAA721D0D71B0004B7976 /* NSArray+reverse.h */,
+				C19FAA731D0D71B0004B7976 /* NSArray+reverse.m */,
 				C4E208610FD13A0500D2ED31 /* BundleLoader.m */,
 				C4E20AF10FD1510A00D2ED31 /* SearchManager.h */,
 				C4E20AF20FD1510A00D2ED31 /* SearchManager.m */,
@@ -209,6 +216,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C19FAA741D0D71B0004B7976 /* NSArray+reverse.m in Sources */,
 				C4E208620FD13A0500D2ED31 /* BundleLoader.m in Sources */,
 				C4E20AF30FD1510A00D2ED31 /* SearchManager.m in Sources */,
 				C48D80230FD1AD420072A78D /* SearchPopup.m in Sources */,

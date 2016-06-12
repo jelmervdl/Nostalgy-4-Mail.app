@@ -9,6 +9,7 @@
 #import "SearchPopup.h"
 #import "Ranker.h"
 #import "PrivateMailHeaders.h"
+#import "NSArray+reverse.h"
 
 NSString *fullPathNameForMailbox(MFMailbox *mailbox)
 {
@@ -25,7 +26,7 @@ NSString *fullPathNameForMailbox(MFMailbox *mailbox)
         mailbox = mailbox.parent;
     }
     
-    return [[[stack reverseObjectEnumerator] allObjects] componentsJoinedByString:@"/"];
+    return [[stack reversed] componentsJoinedByString:@"/"];
 }
 
 @implementation SearchPopup
