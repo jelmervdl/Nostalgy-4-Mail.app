@@ -1,26 +1,28 @@
-# GMailinator
+# GMailinator/Nostalgy4MailApp
 
 Adds Gmail-esque keyboard shorcuts to Mail.app.  This is still very much a work
-in progress.  Tested with Mail for OS X 10.8.4.
+in progress. Tested with Mail for 10.11 and 10.12 Public Beta 2.
 
 ## Supported Shortcuts
 
 <table>
   <tr><th>Key</th><th>Action</th></tr>
   <tr><td>c</td><td>Compose new message</td></tr>
-  <tr><td>r</td><td>Reply</td></tr>
-  <tr><td>a</td><td>Reply All</td></tr>
-  <tr><td>y, e</td><td>Archive</td></tr>
-  <tr><td>#</td><td>Delete</td></tr>
+  <tr><td>r</td><td>Reply All</td></tr>
+  <tr><td>f</td><td>Forward</td></tr>
+  <tr><td>s</td><td>Flag (Star)</td></tr>
+  <tr><td>e</td><td>Archive</td></tr>
+  <tr><td>l</td><td>Copy message to folder (opens dialog)</td></tr>
+  <tr><td>m</td><td>Move message to folder (opens dialog)</td></tr>
   <tr><td>j</td><td>Go to previous message/thread</td></tr>
   <tr><td>k</td><td>Go to next message/thread</td></tr>
+  <tr><td>g</td><td>Go to folder (opens dialog)</td></tr>
   <tr><td>/</td><td>Mailbox search</td></tr>
-  <tr><td>l</td><td>Move to folder (opens dialog)</td></tr>
 </table>
 
 ## How to install
 
-1. Grab the latest build from the builds/ directory, and unzip to ~/Library/Mail/Bundles
+1. Grab the latest build from the [https://github.com/jelmervdl/Nostalgy-4-Mail.app/releases](Release page), and unzip to ~/Library/Mail/Bundles
 2. Enable Mail.app plugins:
        `defaults write com.apple.mail EnableBundles -bool true`
 
@@ -34,19 +36,6 @@ in progress.  Tested with Mail for OS X 10.8.4.
 
 ## Credits
 
-A lot of this was built with heavy use of of the
-[BindDeleteKeyToArchive](https://github.com/benlenarts/BindDeleteKeyToArchive)
-project by Ben Lenarts.  The Xcode project and interface skeleton were
-all from that project, and for the most part, renamed.  I added the keybinding code.
+The project has become a weird mix of both [https://github.com/nompute/GMailinator](Gmailinator) by [https://github.com/nompute](Michael Lai) and [https://github.com/fxtentacle/Nostalgy-4-Mail.app](Nostalgy-4-Mail.app) by [https://github.com/fxtentacle](Hajo Nils Krabbenhöft) and later [https://github.com/cubbi](Marcin Pyla). I somewhat merged both projects to my preferences and rewrote parts of it to be compatible with later versions of Apple's Mail.app.
 
-A lot of the code is also either copied in whole, or modified from the
-Nostalgy4Mail.app project, by [Hajo Nils
-Krabbenhöft](https://github.com/fxtentacle/Nostalgy-4-Mail.app), and
-subsequently by [Jelmer van der
-Linde](https://github.com/jelmervdl/Nostalgy-4-Mail.app). I've added support
-for ARC (turns out there were quite a few leaks), and prettied-up (imho) the
-move-to-folder dialog.
-
-Other references:
-
-- [Rui Carmo's PyObjC vim keybinding script](http://taoofmac.com/space/blog/2011/08/13/2110)
+Finally, this project could not have been maintained by me done without the invaluable [http://stevenygard.com/projects/class-dump/](class-dump) by Steve Nygard.
