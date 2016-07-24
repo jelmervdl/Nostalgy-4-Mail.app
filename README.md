@@ -22,20 +22,20 @@ in progress. Tested with Mail for 10.11 and 10.12 Public Beta 2.
 
 ## How to install
 
-1. Grab the latest build from the [https://github.com/jelmervdl/Nostalgy-4-Mail.app/releases](Release page), and unzip to ~/Library/Mail/Bundles
+1. Grab the latest build from the [Release page](https://github.com/jelmervdl/Nostalgy-4-Mail.app/releases), and unzip to `~/Library/Mail/Bundles`
 2. Enable Mail.app plugins:
        `defaults write com.apple.mail EnableBundles -bool true`
 
 ## How to build
 
 1. Load up the project in Xcode.
-2. Run the build, this should automatically create ~/Library/Mail/Bundles (but you may need to create this).
+2. Run the build, this should automatically create `~/Library/Mail/Bundles` (but you may need to create this).
 3. Enable Mail.app plugins:
        `defaults write com.apple.mail EnableBundles -bool true`
 4. Relaunch Mail.
 
 ## Credits
 
-The project has become a weird mix of both [https://github.com/nompute/GMailinator](Gmailinator) by [https://github.com/nompute](Michael Lai) and [https://github.com/fxtentacle/Nostalgy-4-Mail.app](Nostalgy-4-Mail.app) by [https://github.com/fxtentacle](Hajo Nils Krabbenhöft) and later [https://github.com/cubbi](Marcin Pyla). I somewhat merged both projects to my preferences and rewrote parts of it to be compatible with later versions of Apple's Mail.app.
+The project has become a weird mix of both [Gmailinator](https://github.com/nompute/GMailinator) by [Michael Lai](https://github.com/nompute) and [Nostalgy-4-Mail.app](https://github.com/fxtentacle/Nostalgy-4-Mail.app) by [Hajo Nils Krabbenhöft](https://github.com/fxtentacle) and later [Marcin Pyla](https://github.com/cubbi). I somewhat merged both projects to my preferences and rewrote parts of it to be compatible with later versions of Apple's Mail.app.
 
-Finally, this project could not have been maintained by me done without the invaluable [http://stevenygard.com/projects/class-dump/](class-dump) by Steve Nygard.
+Finally, this project could not have been maintained by me done without the invaluable [class-dump](http://stevenygard.com/projects/class-dump/) by Steve Nygard.
