@@ -129,14 +129,14 @@
     MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
     NSMutableArray *viewers = [mailApp messageViewers];
     MessageViewer *viewer = [viewers firstObject];
-    [[[viewer messageListController] tableViewManager] selectNextMessage:NO];
+    [viewer.tableManager selectNextMessage:NO];
 }
 
 -(IBAction)previousMessage:(id)sender {
     MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
     NSMutableArray *viewers = [mailApp messageViewers];
     MessageViewer *viewer = [viewers firstObject];
-    [[[viewer messageListController] tableViewManager] selectPreviousMessage:NO];
+    [viewer.tableManager selectPreviousMessage:NO];
 }
 
 -(IBAction)focusSearchField:(id)sender {

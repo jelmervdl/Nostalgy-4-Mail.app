@@ -41,7 +41,7 @@
 @end
 
 @interface MessageViewer : NSResponder
-@property(retain, nonatomic) MessageListController *messageListController;
+@property(readonly, nonatomic) TableViewManager *tableManager;
 - (void)copyMessagesToMailbox:(id)arg1;
 - (void)moveMessagesToMailbox:(id)arg1;
 - (void)archiveMessages:(id)arg1;
