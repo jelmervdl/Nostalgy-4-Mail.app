@@ -34,6 +34,8 @@ NSString *fullPathNameForMailbox(MFMailbox *mailbox)
 + (id)popupWithDelegate:(NSObject *)delegate
 {
     SearchPopup* popup = [[SearchPopup alloc] init];
+    
+    [delegate retain];
 	popup->delegate = delegate;
     
     [NSBundle loadNibNamed: @"SearchPopup" owner:popup];
@@ -84,6 +86,7 @@ NSString *fullPathNameForMailbox(MFMailbox *mailbox)
 {
     [folders release];
     [currentResults release];
+    [delegate release];
     [super dealloc];
 }
 

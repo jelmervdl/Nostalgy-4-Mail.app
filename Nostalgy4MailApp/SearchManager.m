@@ -21,11 +21,12 @@
 
 @implementation MoveMessageDelegate
 
+- (instancetype) initForMessageViewer:(MessageViewer *)target {
+    viewer = target;
+    return self;
+}
+
 - (void) mailboxSelected:(id)mailbox {
-    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
-    NSMutableArray *viewers = [mailApp messageViewers];
-    MessageViewer *viewer = [viewers firstObject];
-    
     RepresentedObject *container = [[RepresentedObject alloc] init];
     [container setRepresentedObject:mailbox];
     
@@ -38,11 +39,12 @@
 
 @implementation CopyMessageDelegate
 
+- (instancetype) initForMessageViewer:(MessageViewer *)target {
+    viewer = target;
+    return self;
+}
+
 - (void) mailboxSelected:(id)mailbox {
-    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
-    NSMutableArray *viewers = [mailApp messageViewers];
-    MessageViewer *viewer = [viewers firstObject];
-    
     RepresentedObject *container = [[RepresentedObject alloc] init];
     [container setRepresentedObject:mailbox];
     
@@ -55,10 +57,12 @@
 
 @implementation SelectMailboxDelegate
 
+- (instancetype) initForMessageViewer:(MessageViewer *)target {
+    viewer = target;
+    return self;
+}
+
 - (void) mailboxSelected:(id) mailbox {
-    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
-    NSMutableArray *viewers = [mailApp messageViewers];
-    MessageViewer *viewer = [viewers firstObject];
     viewer.selectedMailboxes = [NSArray arrayWithObject:mailbox];
 }
 
@@ -66,87 +70,85 @@
 
 @implementation SearchManager
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        moveMessageDelegate = [[MoveMessageDelegate alloc] init];
-        copyMessageDelegate = [[CopyMessageDelegate alloc] init];
-        selectMailboxDelegate = [[SelectMailboxDelegate alloc] init];
-    }
-    return self;
+- (MessageViewer*) frontmostMessageViewer {
+    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
+    NSWindow *keyWindow = [mailApp keyWindow];
+    
+    if (keyWindow == nil)
+        return nil;
+    
+    Class MessageViewerClass = objc_lookUpClass("MessageViewer");
+    
+    if ([[keyWindow delegate] isKindOfClass:MessageViewerClass])
+        return (MessageViewer*)[keyWindow delegate];
+    else
+        return nil;
 }
- 
 
 - (IBAction)moveToFolder:(id)sender {
-    [[SearchPopup popupWithDelegate:moveMessageDelegate] showWithSender:sender andTitle:@"Move to folder"];
+    MessageViewer *viewer = [self frontmostMessageViewer];
+    if (viewer != nil) {
+        id delegate = [[[MoveMessageDelegate alloc] initForMessageViewer:viewer] autorelease];
+        [[SearchPopup popupWithDelegate:delegate] showWithSender:sender andTitle:@"Move to folder"];
+    }
 }
 
 - (IBAction)copyToFolder:(id)sender {
-	[[SearchPopup popupWithDelegate:copyMessageDelegate] showWithSender:sender andTitle:@"Copy to folder"];
+    MessageViewer *viewer = [self frontmostMessageViewer];
+    if (viewer != nil) {
+        id delegate = [[[CopyMessageDelegate alloc] initForMessageViewer:viewer] autorelease];
+        [[SearchPopup popupWithDelegate:delegate] showWithSender:sender andTitle:@"Copy to folder"];
+    }
 }
 
 - (IBAction)goToFolder:(id)sender {
-    [[SearchPopup popupWithDelegate:selectMailboxDelegate] showWithSender:sender andTitle:@"Go to folder"];
+    MessageViewer *viewer = [self frontmostMessageViewer];
+    if (viewer != nil) {
+        id delegate = [[[SelectMailboxDelegate alloc] initForMessageViewer:viewer] autorelease];
+        [[SearchPopup popupWithDelegate:delegate] showWithSender:sender andTitle:@"Go to folder"];
+    }
 }
 
 - (IBAction)archiveMessages:(id)sender {
-    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
-    NSMutableArray *viewers = [mailApp messageViewers];
-    MessageViewer *viewer = [viewers firstObject];
+    MessageViewer *viewer = [self frontmostMessageViewer];
     [viewer archiveMessages:nil];
 }
 
 - (IBAction)replyAllMessage:(id)sender {
-    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
-    NSMutableArray *viewers = [mailApp messageViewers];
-    MessageViewer *viewer = [viewers firstObject];
+    MessageViewer *viewer = [self frontmostMessageViewer];
     [viewer replyAllMessage:nil];
 }
 
 - (IBAction)forwardMessage:(id)sender {
-    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
-    NSMutableArray *viewers = [mailApp messageViewers];
-    MessageViewer *viewer = [viewers firstObject];
+    MessageViewer *viewer = [self frontmostMessageViewer];
     [viewer forwardMessage:nil];
 }
 
 - (IBAction)toggleFlag:(id)sender {
-    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
-    NSMutableArray *viewers = [mailApp messageViewers];
-    MessageViewer *viewer = [viewers firstObject];
+    MessageViewer *viewer = [self frontmostMessageViewer];
     [viewer toggleFlag:nil];
 }
 
 - (IBAction)newMessage:(id)sender {
-    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
-    NSMutableArray *viewers = [mailApp messageViewers];
-    MessageViewer *viewer = [viewers firstObject];
+    MessageViewer *viewer = [self frontmostMessageViewer];
     [viewer showComposeWindow:nil];
 }
 
 -(IBAction)nextMessage:(id)sender {
-    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
-    NSMutableArray *viewers = [mailApp messageViewers];
-    MessageViewer *viewer = [viewers firstObject];
+    MessageViewer *viewer = [self frontmostMessageViewer];
     [viewer.tableManager selectNextMessage:NO];
 }
 
 -(IBAction)previousMessage:(id)sender {
-    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
-    NSMutableArray *viewers = [mailApp messageViewers];
-    MessageViewer *viewer = [viewers firstObject];
+    MessageViewer *viewer = [self frontmostMessageViewer];
     [viewer.tableManager selectPreviousMessage:NO];
 }
 
 -(IBAction)focusSearchField:(id)sender {
-    MailApp *mailApp = (MailApp*)[NSApplication sharedApplication];
-    NSMutableArray *viewers = [mailApp messageViewers];
-    MessageViewer *viewer = [viewers firstObject];
+    MessageViewer *viewer = [self frontmostMessageViewer];
     if ([viewer.searchField acceptsFirstResponder])
         [viewer.window makeFirstResponder:viewer.searchField];
 }
-
 
 
 - (NSMenuItem *) newMenuItemWithTitle:(NSString *)title action:(SEL)action andKeyEquivalent:(NSString *)keyEquivalent inMenu:(NSMenu *)menu relativeToItemWithSelector:(SEL)selector offset:(int)offset
