@@ -139,9 +139,19 @@
     [viewer.tableManager selectNextMessage:NO];
 }
 
+-(BOOL)canSelectNextMessage {
+    MessageViewer *viewer = [self frontmostMessageViewer];
+    return [viewer.tableManager canSelectPreviousMessage]; // I don't really understand it either..
+}
+
 -(IBAction)previousMessage:(id)sender {
     MessageViewer *viewer = [self frontmostMessageViewer];
     [viewer.tableManager selectPreviousMessage:NO];
+}
+
+-(BOOL)canSelectPreviousMessage {
+    MessageViewer *viewer = [self frontmostMessageViewer];
+    return [viewer.tableManager canSelectNextMessage]; // Yep, I'm out of my depth here
 }
 
 -(IBAction)focusSearchField:(id)sender {

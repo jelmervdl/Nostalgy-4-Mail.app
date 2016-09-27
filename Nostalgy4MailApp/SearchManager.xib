@@ -18,12 +18,14 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="nextMessage:" target="-2" id="x6W-8d-a06"/>
+                        <binding destination="-2" name="enabled" keyPath="self.canSelectNextMessage" id="K2c-qE-FRe"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Previous" keyEquivalent="j" id="hbJ-cj-TVf">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="previousMessage:" target="-2" id="Bsv-FO-zVn"/>
+                        <binding destination="-2" name="enabled" keyPath="self.canSelectPreviousMessage" id="l3O-Up-k8D"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Go to folder…" tag="1" keyEquivalent="g" id="s3a-4W-Twg">

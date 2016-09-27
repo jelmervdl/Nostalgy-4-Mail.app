@@ -32,6 +32,8 @@
 @end
 
 @interface TableViewManager : NSObject
+@property(readonly, nonatomic) BOOL canSelectPreviousMessage;
+@property(readonly, nonatomic) BOOL canSelectNextMessage;
 - (void)selectNextMessage:(BOOL)arg1;
 - (void)selectPreviousMessage:(BOOL)arg1;
 @end
