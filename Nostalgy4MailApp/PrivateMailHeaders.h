@@ -42,8 +42,19 @@
 @property(retain, nonatomic) TableViewManager *tableViewManager;
 @end
 
+@interface ConversationSet : NSObject
+@property(nonatomic) unsigned long long unreadMessageCount; // @synthesize unreadMessageCount=_unreadMessageCount;
+@property(nonatomic) unsigned long long totalMessageCount; // @synthesize totalMessageCount=_totalMessageCount;
+@property(readonly, nonatomic) unsigned long long count;
+@end
+
+@interface MessageSelection : NSObject
+@property(readonly, copy, nonatomic) ConversationSet *conversations;
+@end
+
 @interface MessageViewer : NSResponder
 @property(readonly, nonatomic) TableViewManager *tableManager;
+@property(readonly, nonatomic) MessageSelection *messageSelection;
 - (void)copyMessagesToMailbox:(id)arg1;
 - (void)moveMessagesToMailbox:(id)arg1;
 - (void)archiveMessages:(id)arg1;

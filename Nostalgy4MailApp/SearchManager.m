@@ -89,7 +89,11 @@
     MessageViewer *viewer = [self frontmostMessageViewer];
     if (viewer != nil) {
         id delegate = [[[MoveMessageDelegate alloc] initForMessageViewer:viewer] autorelease];
-        [[SearchPopup popupWithDelegate:delegate] showWithSender:sender andTitle:@"Move to folder"];
+        [[SearchPopup popupWithDelegate:delegate]
+         showWithSender:sender
+         andTitle:[NSString
+                   stringWithFormat:NSLocalizedString(@"Move %d conversation", @"Move %d conversations"),
+                   viewer.messageSelection.conversations.count]];
     }
 }
 
@@ -97,7 +101,11 @@
     MessageViewer *viewer = [self frontmostMessageViewer];
     if (viewer != nil) {
         id delegate = [[[CopyMessageDelegate alloc] initForMessageViewer:viewer] autorelease];
-        [[SearchPopup popupWithDelegate:delegate] showWithSender:sender andTitle:@"Copy to folder"];
+        [[SearchPopup popupWithDelegate:delegate]
+         showWithSender:sender
+         andTitle:[NSString
+                   stringWithFormat:NSLocalizedString(@"Copy %d conversation", @"Copy %d conversations"),
+                   viewer.messageSelection.conversations.count]];
     }
 }
 
