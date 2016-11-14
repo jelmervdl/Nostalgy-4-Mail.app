@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>de.r8s.Nostalgy4MailApp</string>
+	<string>com.github.jelmervdl.Nostalgy4MailApp</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -17,9 +17,9 @@
 	<key>CFBundleSignature</key>
 	<string>HAJO</string>
 	<key>CFBundleVersion</key>
-	<string>1.1</string>
+	<string>1.2.2</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>(c) Hajo Nils Krabbenhöft</string>
+	<string>(C) Jelmer van der Linde</string>
 	<key>NSPrincipalClass</key>
 	<string>BundleLoader</string>
 	<key>SIMBLApplicationIdentifier</key>
