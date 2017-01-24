@@ -122,6 +122,11 @@
     [viewer archiveMessages:nil];
 }
 
+- (IBAction)replyMessage:(id)sender {
+  MessageViewer *viewer = [self frontmostMessageViewer];
+  [viewer replyMessage:nil];
+}
+
 - (IBAction)replyAllMessage:(id)sender {
     MessageViewer *viewer = [self frontmostMessageViewer];
     [viewer replyAllMessage:nil];

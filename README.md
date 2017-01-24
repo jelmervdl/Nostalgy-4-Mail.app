@@ -8,7 +8,8 @@ in progress. Tested with Mail for 10.11, 10.12 and 10.12.2 Beta.
 <table>
   <tr><th>Key</th><th>Action</th></tr>
   <tr><td>c</td><td>Compose new message</td></tr>
-  <tr><td>r</td><td>Reply All</td></tr>
+  <tr><td>r</td><td>Reply</td></tr>
+  <tr><td>a</td><td>Reply All</td></tr>
   <tr><td>f</td><td>Forward</td></tr>
   <tr><td>s</td><td>Flag (Star)</td></tr>
   <tr><td>e</td><td>Archive</td></tr>

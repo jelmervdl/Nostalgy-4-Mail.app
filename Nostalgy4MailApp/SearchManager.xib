@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2327e" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1050" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SearchManager">
@@ -41,10 +41,16 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="VUk-TO-fiz"/>
-                <menuItem title="Reply All" keyEquivalent="r" id="iz1-BE-8dI">
+                <menuItem title="Reply" keyEquivalent="r" id="iz1-BE-8dI">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="replyAllMessage:" target="-2" id="rIx-4d-x97"/>
+                        <action selector="replyMessage:" target="-2" id="PhT-e2-Gba"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Reply All" keyEquivalent="a" id="3fz-61-Tqh">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="replyAllMessage:" target="-2" id="0tv-eE-BfF"/>
                     </connections>
                 </menuItem>
                 <menuItem title="Forward" keyEquivalent="f" id="VCM-02-nRT">
