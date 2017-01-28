@@ -1,7 +1,7 @@
 # GMailinator/Nostalgy4MailApp
 
 Adds Gmail-esque keyboard shorcuts to Mail.app.  This is still very much a work
-in progress. Tested with Mail for 10.11, 10.12 and 10.12.2 Beta.
+in progress. Tested with Mail from 10.11 up to 10.12.4 Beta.
 
 ## Supported Shortcuts
 
