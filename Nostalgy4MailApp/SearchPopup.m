@@ -52,7 +52,6 @@ NSString *fullPathNameForMailbox(MFMailbox *mailbox)
             for (MFMailbox *mailbox in account.mailboxes) {
                 if (mailbox.isValid && mailbox.isVisible) {
                     NSString *name = fullPathNameForMailbox(mailbox);
-                    // NSLog(@"N4M: Adding mailbox %@: %@", name, mailbox);
                     [dict setObject:mailbox forKey:name];
                 }
             }
@@ -60,11 +59,21 @@ NSString *fullPathNameForMailbox(MFMailbox *mailbox)
     }
     
     MessageViewer *viewer = [[mailApp messageViewers] firstObject];
-    [dict setObject:viewer.junkMailbox forKey:viewer.junkMailbox.name];
-    [dict setObject:viewer.sentMailbox forKey:viewer.sentMailbox.name];
-    [dict setObject:viewer.draftsMailbox forKey:viewer.draftsMailbox.name];
-    [dict setObject:viewer.outbox forKey:viewer.outbox.name];
-    [dict setObject:viewer.inbox forKey:viewer.inbox.name];
+    
+    if (viewer.junkMailbox != nil)
+        [dict setObject:viewer.junkMailbox forKey:viewer.junkMailbox.name];
+    
+    if (viewer.sentMailbox != nil)
+        [dict setObject:viewer.sentMailbox forKey:viewer.sentMailbox.name];
+    
+    if (viewer.draftsMailbox != nil)
+        [dict setObject:viewer.draftsMailbox forKey:viewer.draftsMailbox.name];
+    
+    if (viewer.outbox != nil)
+        [dict setObject:viewer.outbox forKey:viewer.outbox.name];
+    
+    if (viewer.inbox != nil)
+        [dict setObject:viewer.inbox forKey:viewer.inbox.name];
 }
 
 - (id) init
