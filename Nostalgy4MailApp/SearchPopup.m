@@ -169,10 +169,10 @@ NSInteger compareMatch(id l_row, id r_row, void *query)
     {
 		 if (selectedResult != nil)
          {
-			 int index = [currentResults indexOfObject:selectedResult] - 1;
+			 NSUInteger index = [currentResults indexOfObject:selectedResult];
 
-			 if (index < 0)
-                 index = 0;
+			 if (index > 0)
+                 index -= 1;
 			 
              selectedResult = [currentResults objectAtIndex:index];
 			 [resultViewer selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:FALSE];
@@ -184,10 +184,10 @@ NSInteger compareMatch(id l_row, id r_row, void *query)
     {
 		 if (selectedResult != nil)
          {
-			 int index = [currentResults indexOfObject: selectedResult] + 1;
+			 NSUInteger index = [currentResults indexOfObject: selectedResult];
              
-			 if (index >= [currentResults count])
-                 index = [currentResults count] - 1;
+			 if (index < [currentResults count])
+                 index += 1;
              
 			 selectedResult = [currentResults objectAtIndex:index];
 			 [resultViewer selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:FALSE];
@@ -216,7 +216,7 @@ NSInteger compareMatch(id l_row, id r_row, void *query)
     return nil;
 }
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
     return [currentResults count];
 }
