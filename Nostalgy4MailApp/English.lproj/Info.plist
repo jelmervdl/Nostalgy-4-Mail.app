@@ -26,6 +26,10 @@
 	<array>
 		<string>com.apple.mail</string>
 	</array>
+	<key>Supported10.13PluginCompatibilityUUIDs</key>
+	<array>
+		<string>C86CD990-4660-4E36-8CDA-7454DEB2E199</string>
+	</array>
 	<key>Supported10.12PluginCompatibilityUUIDs</key>
 	<array>
 		<string>21560BD9-A3CC-482E-9B99-95B7BF61EDC1</string>
