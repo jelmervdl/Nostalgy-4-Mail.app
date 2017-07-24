@@ -232,7 +232,7 @@ NSInteger compareMatch(id l_row, id r_row, void *query)
 
 - (IBAction)changeSelection:sender
 {
-	int i = [resultViewer selectedRow];
+	NSInteger i = [resultViewer selectedRow];
     
 	if (i >= 0 && i < [currentResults count])
 		selectedResult = [currentResults objectAtIndex: i];
